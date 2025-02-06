@@ -1,8 +1,14 @@
 from django.utils.functional import LazyObject
 from django.contrib import admin
-from .models import User
+from .models import User, Referral
 from unfold.admin import ModelAdmin
 
+
+@admin.register(Referral)
+class UserAdmin(ModelAdmin):
+    list_display = ('telegram_id', 'people_invited', 'people_bought_subscription')
+    ordering = ('-people_invited', '-people_bought_subscription')
+    search_fields = ('telegram_id',)
 
 @admin.register(User)
 class UserAdmin(ModelAdmin):
@@ -25,10 +31,3 @@ class UserAdmin(ModelAdmin):
         }),
     )
     readonly_fields = ('telegram_id',)
-
-
-
-
-
-
-
