@@ -20,7 +20,7 @@ class User(models.Model):
     company_name = models.CharField(max_length=255, blank=True, null=True, verbose_name='Company Name')
     position = models.CharField(max_length=255, blank=True, null=True, verbose_name='Position')
     is_accepted = models.BooleanField(default=False, verbose_name='Is Accepted to Free Channels')
-    is_accepted_to_paid_partnership = models.BooleanField(default=False, verbose_name='Is Accepted to Paid Channels')
+    is_accepted_to_paid_membership = models.BooleanField(default=False, verbose_name='Is Accepted to Paid Channels')
     subscription_till = models.DateField(blank=True, null=True, verbose_name="Subscription lasts till")
     #invited_by = models.ForeignKey('Referral', on_delete=models.CASCADE, to_field='telegram_id')
     invited_by = models.BigIntegerField()

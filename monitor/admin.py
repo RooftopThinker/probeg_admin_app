@@ -13,9 +13,9 @@ class UserAdmin(ModelAdmin):
 @admin.register(User)
 class UserAdmin(ModelAdmin):
     list_display = ('telegram_id', 'telegram_username', 'telegram_name', 'phone_number', 'admin_role',
-                    'email', 'full_name', 'company_name', 'position', 'is_accepted', 'is_accepted_to_paid_partnership',
+                    'email', 'full_name', 'company_name', 'position', 'is_accepted', 'is_accepted_to_paid_membership',
                     'subscription_till')
-    list_filter = ('is_accepted', 'role', 'is_accepted_to_paid_partnership')
+    list_filter = ('is_accepted', 'role', 'is_accepted_to_paid_membership')
     search_fields = ('telegram_username', 'phone_number', 'email', 'telegram_id', 'full_name', 'company_name',
                      'position')
     # ordering = ('-telegram_id',)
@@ -24,7 +24,7 @@ class UserAdmin(ModelAdmin):
             'fields': ('telegram_id', 'telegram_username', 'telegram_name', 'email', 'phone_number')
         }),
         ('Role and Status', {
-            'fields': ('role', 'is_accepted', 'is_accepted_to_paid_partnership')
+            'fields': ('role', 'is_accepted', 'is_accepted_to_paid_membership')
         }),
         ('Other Details', {
             'fields': ('full_name', 'company_name', 'position', 'subscription_till')
