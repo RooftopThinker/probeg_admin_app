@@ -22,8 +22,9 @@ class User(models.Model):
     is_accepted = models.BooleanField(default=False, verbose_name='Is Accepted to Free Channels')
     is_accepted_to_paid_membership = models.BooleanField(default=False, verbose_name='Is Accepted to Paid Channels')
     subscription_till = models.DateField(blank=True, null=True, verbose_name="Subscription lasts till")
-    #invited_by = models.ForeignKey('Referral', on_delete=models.CASCADE, to_field='telegram_id')
     invited_by = models.BigIntegerField()
+    is_bot_blocked = models.BooleanField(default=False, verbose_name='Is Bot Blocked')
+    applied_to_paid_membership = models.BooleanField(default=False, verbose_name='Applied to Paid Membership')
     # phone_number = models.CharField(max_length=20, null=False, verbose_name='Номер телефона')
     # email = models.EmailField(blank=True, null=True)
     # role = models.IntegerField(choices=ROLE_CHOICES, default=0)
@@ -67,5 +68,16 @@ class Referral(models.Model):
         return f"Referral ID: {self.telegram_id}"
 
 
+class Receipt(models.Model):
+    order_id = models.CharField(unique=True)
+    telegram_id = models.ForeignKey(User, on_delete=models.CASCADE, db_column='telegram_id', to_field='telegram_id',
+                                    verbose_name='User')
+    date = models.DateTimeField()
+    is_paid = models.BooleanField(default=False)
 
+    class Meta:
+        db_table = 'receipts'
+
+    def __str__(self):
+        return f"Receipt ID: {self.id}, Order ID: {self.order_id}"
 
