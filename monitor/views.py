@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from aiogram import Bot
 from monitor.models import Receipt, User
@@ -6,12 +6,13 @@ import datetime
 import json
 import config
 import asyncio
-from monitor.utils import get_client_ip, validate_token
-from django.contrib.humanize.templatetags.humanize import intcomma
-import random
+from monitor.utils import validate_token
+from django.utils import timezone
+
 
 
 def dashboard_callback(request, context):
+
     alive_users = User.objects.filter(is_bot_blocked=False).count()
     all_users = User.objects.count()
     users_registered = User.objects.exclude(full_name__isnull=True).exclude(full_name__exact='').count()
@@ -54,7 +55,7 @@ def dashboard_callback(request, context):
 
 
 @csrf_exempt
-def test(request):
+def accept_payment(request):
     request_json = json.loads(request.body)
     if not request_json['Success'] or request_json['Status'] != "AUTHORIZED":
         # asyncio.run(bot.send_message(text=str(list(Receipt.objects.get())) + 'SOSI HUETS', chat_id=1186221701))
@@ -70,7 +71,7 @@ def test(request):
         return HttpResponse(status=200)
     order.is_paid = True
     order.save()
-    order.telegram_id.subscription_till = datetime.datetime.now() + datetime.timedelta(days=365)
+    order.telegram_id.subscription_till = timezone.now() + datetime.timedelta(days=365)
     order.telegram_id.save()
     bot = Bot(token=config.BOT_TOKEN)
     asyncio.run(

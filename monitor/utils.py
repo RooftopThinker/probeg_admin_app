@@ -13,7 +13,10 @@ def get_client_ip(request):
 
 
 def validate_token(params: dict, password: str) -> bool:
-    token = params['Token']
+    try:
+        token = params['Token']
+    except KeyError:
+        return False
     del params['Token']
     params_with_password = params.copy()
     params_with_password['Password'] = password
@@ -22,17 +25,11 @@ def validate_token(params: dict, password: str) -> bool:
             params_with_password[i[0]] = 'true'
         if i[1] == False:
             params_with_password[i[0]] = 'false'
-    f = open('params_with_password', 'w')
-    f.write(str(params_with_password))
-    f.close()
     sorted_params = dict(sorted(params_with_password.items()))
 
     concatenated_string = ''.join(str(value) for value in sorted_params.values())
 
     sha256_hash = hashlib.sha256(concatenated_string.encode('utf-8')).hexdigest()
-    f = open('sha256', 'w')
-    f.write(str(sha256_hash))
-    f.close()
     if sha256_hash == token:
         return True
     return False
