@@ -1,7 +1,7 @@
 from django.shortcuts import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from aiogram import Bot
-from monitor.models import Receipt, User
+from monitor.models import Receipt, User, Referral
 import datetime
 import json
 import config
@@ -73,6 +73,12 @@ def accept_payment(request):
     order.save()
     order.telegram_id.subscription_till = timezone.now() + datetime.timedelta(days=365)
     order.telegram_id.save()
+    try:
+        referral = Referral.objects.get(telegram_id=order.telegram_id)
+        referral.people_bought_subscription = referral.people_bought_subscription + 1
+        referral.save()
+    except Referral.DoesNotExist:
+        pass
     bot = Bot(token=config.BOT_TOKEN)
     asyncio.run(
         bot.send_message(text="Вам дан доступ к платным форматам! [ссылка]", chat_id=order.telegram_id.telegram_id))
